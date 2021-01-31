@@ -28,6 +28,8 @@ subscribe监听state改变，并通过 setState
 
 reducer 返回做手术后的state，利用 JSON.stringify、parse等
 
+**redux-thunk**  EXTENSION__  ->  COMPOSE__
+
 
 
 ## 基本

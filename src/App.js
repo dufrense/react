@@ -1,5 +1,6 @@
 import { store, constants } from './store';
 import { Component } from 'react';
+import axios from 'axios';
 
 class App extends Component {
 
@@ -25,7 +26,11 @@ class App extends Component {
   }
 
   changeName(e){
-    store.dispatch({type: constants.CHANGE_NAME, data: e.target.value })
+    store.dispatch((dispatch) => {
+      axios.get('/nameBack.json').then(ret => {
+        dispatch({type: constants.CHANGE_NAME, data: ret.data})
+      })
+    })
   }
 
 }
