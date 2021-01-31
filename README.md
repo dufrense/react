@@ -20,3 +20,9 @@ let fn 此 Router 文件夹为 routers
 
 
 
+## 基本
+
+React 两种常见类型对象 createElement Componet 
+
+
+
