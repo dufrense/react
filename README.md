@@ -20,6 +20,16 @@ let fn 此 Router 文件夹为 routers
 
 
 
+## store简单操作
+
+store 下index.js导出 constants中变量
+
+subscribe监听state改变，并通过 setState
+
+reducer 返回做手术后的state，利用 JSON.stringify、parse等
+
+
+
 ## 基本
 
 React 两种常见类型对象 createElement Componet 
