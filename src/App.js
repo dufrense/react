@@ -1,6 +1,6 @@
 import { store, constants, actionCreators } from './store';
 import { Component } from 'react';
-import { connect } from 'react-redux';
+import { connect } from 'dva';
 
 const App = (props) => {
   const { wholeName, changeName } = props;
@@ -14,10 +14,11 @@ const App = (props) => {
 
 export default connect
   (
-    (state) => ({ wholeName: state.wholeName }),
+    (state) => ({ wholeName: state.index.wholeName }),
     (dispatch) => ({
       changeName() {
-        dispatch(actionCreators.changeNameAction());
+        // dispatch(actionCreators.changeNameAction()); 不用 redux-thunk了
+        dispatch({type: 'index/changeName'})
       }
     })
   )(App);

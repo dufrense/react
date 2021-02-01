@@ -34,9 +34,15 @@ reducer 返回做手术后的state，利用 JSON.stringify、parse等
 
 (dispatch) => ({}) 隔层作用，connect 用的这两个都是返回函数
 
-props 无状态组件
+props 无状态组件，下面直接用 props，如果还是 Component，在 connect 连接后，要用 this.props
 
+## saga
 
+connect 引源于 dva，原理与 redux-thunk 相同
+
+state 与 type 要注意加 namespace，effect 与 reducer 对应的函数不要重名
+
+model(modelIndex)
 
 ## 基本
 
