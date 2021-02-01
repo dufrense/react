@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import AppWrapper from './AppWrapper';
 import store from './store';
 import dva from 'dva';
 import { createBrowserHistory } from 'history';

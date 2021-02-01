@@ -30,6 +30,12 @@ reducer 返回做手术后的state，利用 JSON.stringify、parse等
 
 **redux-thunk**  EXTENSION__  ->  COMPOSE__
 
+## react-redux
+
+(dispatch) => ({}) 隔层作用，connect 用的这两个都是返回函数
+
+props 无状态组件
+
 
 
 ## 基本
