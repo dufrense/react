@@ -44,6 +44,16 @@ state 与 type 要注意加 namespace，effect 与 reducer 对应的函数不要
 
 model(modelIndex)
 
+## dva store
+
+不用 store，Provider等。connect 也不源于 react-redux
+
+state 改后需要合并成一个包含原属性的对象
+
+该在 Component 中写的函数写在内部，仅当有改变数据源时，写在 connect中的映射
+
+
+
 ## 基本
 
 React 两种常见类型对象 createElement Componet 
