@@ -4,61 +4,58 @@ import { connect } from 'dva';
 
 var waitedForTyped = null;
 var waitedTypedIndex = null;
-var typeAudio = new Audio("http://jsdx.sc.chinaz.com/Files/DownLoad/sound1/201607/7571.mp3");
 var pressButtonAudio = new Audio("https://d1490khl9dq1ow.cloudfront.net/sfx/mp3preview/ibm-computer-keyboard-press-enter-key_GJE0qjEd.mp3");
 var timer = null;
 
 class Game extends React.Component {
   constructor(props) {
+
     super(props);
 
-    this.handleClickButton = this.handleClickButton.bind(this);
+    this.handleClickStartButton = this.handleClickStartButton.bind(this);
     this.typing = this.typing.bind(this);
     this.loseGame = this.loseGame.bind(this);
   }
 
   calculateTime() {
     clearInterval(timer);
-
-    const { setMyState } = this.props;
+    this.props.setRemoteState({
+      timeLeft: 5
+    });
 
     timer = setInterval(() => {
-      var timeLeft = timeLeft - 1;
-
-      setMyState({ timeLeft: timeLeft });
+      var timeLeft = this.props.timeLeft - 1;
+      this.props.setRemoteState({
+        timeLeft: timeLeft
+      });
 
       if (timeLeft <= 0) {
         this.loseGame();
       }
-    }, 100000);
+    }, 1000);
   }
 
-  handleClickButton(e) {
-    const { gameState, setMyState } = this.props;
+  handleClickStartButton(e) {
 
-    if (!gameState) {
-      setMyState({
-          gameState: 1,
-          score: 0
+    const { isGameStarted, setRemoteState } = this.props;
+    if (!isGameStarted) {
+      
+      setRemoteState({
+        isGameStarted: 1,
+        score: 0
       });
 
+      console.log("start generateWord", this.props.isGameStarted);
       this.generateWord();
+      window.addEventListener("keydown", this.typing);
     }
   }
 
-  componentDidMount(){
-    window.addEventListener("keydown", this.typing);
-  }
-
   typing(event) {
-    typeAudio.currentTime = 0;
-    typeAudio.play();
     var typed = String.fromCharCode(event.which);
     var letter = document.getElementById("letter-" + waitedTypedIndex);
-
-    const { word, setMyState, score } = this.props;
-
     if (typed === waitedForTyped) {
+      var word = this.props.word;
       if (waitedTypedIndex !== word.length - 1) {
         letter.classList.remove("wrong");
         letter.classList.add("typed");
@@ -68,21 +65,19 @@ class Game extends React.Component {
       } else {
         pressButtonAudio.currentTime = 0;
         pressButtonAudio.play();
-
-        setMyState({
-          score: score + 1
+        this.props.setRemoteState((prevState) => {
+          return { score: prevState.score + 1 };
         });
-
         this.generateWord();
       }
     } else {
       letter.classList.add("wrong");
 
-      setMyState({
-        score: score - 1
+      this.props.setRemoteState((prevState) => {
+        return { score: prevState.score - 1 };
       });
 
-      if (this.state.score < 0) {
+      if (this.props.score < 0) {
         this.loseGame();
       }
     }
@@ -99,13 +94,11 @@ class Game extends React.Component {
     this.resetSpans();
     this.calculateTime();
 
-    const { wordList, setMyState } = this.props;
+    var random = Math.floor((Math.random() * this.props.wordList.length));
+    var word = this.props.wordList[random];
 
-    var random = Math.floor((Math.random() * wordList.length));
-    var word = wordList[random];
-    
-    setMyState({
-        word: word
+    this.props.setRemoteState({
+      word: word
     });
 
     waitedTypedIndex = 0;
@@ -117,22 +110,18 @@ class Game extends React.Component {
     window.removeEventListener("keydown", this.typing);
     clearInterval(timer);
 
-
-    let { setMyState } = this.props;
-    setMyState({
-        gameState: 0
-      });
+    this.props.setRemoteState({
+      isGameStarted: 0
+    });
 
     waitedForTyped = null;
     waitedTypedIndex = null;
   }
 
   render() {
-    console.log("render了一次");
-
-    const { word, score, timeLeft } = this.props;
-    console.log(timeLeft, score, word);
-    console.log("当前word", word);
+    
+    // hope somebody can optimize these codes
+    const { word } = this.props;
 
     var chars = [];
     for (var i = 0; i < word.length; ++i) {
@@ -142,20 +131,22 @@ class Game extends React.Component {
       return (<span key={index} id={"letter-" + index}>{char}</span>);
     });
 
+    console.log("word_spans", word_spans)
+
     return (
       <div className="wrapper">
-        <h1>Typing Game</h1>
+        <h1>Typing Game{this.props.word}</h1>
         <p className="comment">Type fastly!</p>
-        <button onClick={this.handleClickButton}>START</button>
+        <button style={this.props.isGameStarted ? { display: 'hidden' } : {}} onClick={this.handleClickStartButton}>START</button>
 
         <div className="outer-wrap">
           <div className="row">
             <div className="score-wrap">
-              Score:<span className="score">{score}</span>
+              Score:<span className="score">{this.props.score}</span>
             </div>
 
             <div className="time-wrap">
-              Time left:<span className="time">{timeLeft}</span>
+              Time left:<span className="time">{this.props.timeLeft}</span>
             </div>
           </div>
         </div>
@@ -169,18 +160,20 @@ class Game extends React.Component {
 
 }
 
+
 export default connect
   (
     (state) => ({
-      wordList: state.index.wordList,
-      word: state.index.word,
-      gameState: state.index.gameState,
-      timeLeft: state.index.timeLeft,
-      score: state.index.score
-    }),
+        isGameStarted: state.index.isGameStarted,
+        score: state.index.score,
+        word: state.index.word,
+        wordList: state.index.wordList,
+        timeLeft: state.index.timeLeft
+      }),
     (dispatch) => ({
-      setMyState(payload) {
-        dispatch({ type: 'index/setMyState', payload });
+      setRemoteState(payload) {
+        // dispatch(actionCreators.changeNameAction()); 不用 redux-thunk了
+        dispatch({type: 'index/setRemoteState', payload});
       }
     })
   )(Game);

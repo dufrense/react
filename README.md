@@ -54,6 +54,12 @@ state 改后需要合并成一个包含原属性的对象
 
 
 
+## Game
+
+数据源更到  reducer 中了，但是页面不 render，新值取不回来，所以肯定是 reducer 这一步出了问题
+
+如果只将最新的值 return 出去，结果是旧值被盖了，如果在此 Object.assign() 一下，还是不行，那只有用 es6 语法
+
 ## 基本
 
 React 两种常见类型对象 createElement Componet 
