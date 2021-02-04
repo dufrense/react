@@ -7,12 +7,13 @@ const Home = () => <div>This is Your Home11</div>
 let fn = function ({ history, app }) {
     return (
         <Router history={history}>
-            <Switch>
-                <Route to="/game" extact component={Game}/>
-                <Route to="/home" extact component={App}/>
+            <Switch>         
+                <Route exact path="/" component={App}/>        
+                <Route path="/home" component={App}/>
+                <Route path="/game" component={Game}/>  
             </Switch>
         </Router>
     )
-}
+}   
 
-export default fn;
+export default fn; 
