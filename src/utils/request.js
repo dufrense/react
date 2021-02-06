@@ -19,6 +19,4 @@ let request = function (url = '', options = {}) {
     }
 }
 
-
-
 export default request;
