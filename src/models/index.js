@@ -41,12 +41,8 @@ let index = {
                 wholeName: payload.wholeName
             }
         },
-        setRemoteState(state, {payload}){
-
-            console.log("es6", {...state, ...payload});
-            console.log("es6", Object.assign(state, payload));
-
-            return {...state, ...payload};
+        setRemoteState(state, { payload }) {
+            return { ...state, ...payload };
         }
     }
 }
